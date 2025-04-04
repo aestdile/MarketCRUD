@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using MarketCRUD.Models;
 using MarketCRUD.Services.IServices;
 
@@ -11,13 +12,66 @@ namespace MarketCRUD.Services
         public string AddProduct(Market product)
         {
             Console.Write("Enter Name: ");
-            product.Name = Console.ReadLine();
+            string name = Console.ReadLine();
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Name cannot be empty.");
+            }
+            else if (name.Length > 20)
+            {
+                Console.WriteLine("Name cannot be more than 20 characters.");
+            }
+            else if (name.Length < 3)
+            {
+                Console.WriteLine("Name cannot be less than 3 characters.");
+            }
+            else if (!char.IsUpper(name[0]))
+            {
+                Console.WriteLine("Name must start with an uppercase letter.");
+            }
+            else if (name.Contains(" "))
+            {
+                Console.WriteLine("Name cannot contain spaces.");
+            }
+            else
+            {
+                product.Name = name;
+            }
             Console.Write("Enter Cost: ");
-            product.Cost = Convert.ToDouble(Console.ReadLine());
-            Console.Write("Enter Made Date: ");
-            product.MadeDate = Convert.ToDateTime(Console.ReadLine());
-            Console.Write("Enter Expiration Date: ");
-            product.ExpirationDate = Convert.ToDateTime(Console.ReadLine());
+            Console.Write("Enter Cost: ");
+            double cost = Convert.ToDouble(Console.ReadLine());
+            if (cost < 0)
+            {
+                Console.WriteLine("Cost cannot be negative.");
+            }
+            else if (cost == 0)
+            {
+                Console.WriteLine("Cost cannot be zero.");
+            }
+            else if (!double.TryParse(Console.ReadLine(), out cost))
+            {
+                Console.WriteLine("Invalid cost. Please enter a valid number.");
+            }
+            else
+            {
+                product.Cost = cost;
+            }
+            Console.WriteLine("Enter Made Date (YYYY-MM-DD): ");
+            Console.Write("YYYY: ");
+            int year = Convert.ToInt32(Console.ReadLine());
+            Console.Write("MM: ");
+            int month = Convert.ToInt32(Console.ReadLine());
+            Console.Write("DD: ");
+            int day = Convert.ToInt32(Console.ReadLine());
+            product.MadeDate = new DateTime(year, month, day);
+            Console.Write("Enter Expiration Date (YYYY-MM-DD): ");
+            Console.Write("YYYY: ");
+            year = Convert.ToInt32(Console.ReadLine());
+            Console.Write("MM: ");
+            month = Convert.ToInt32(Console.ReadLine());
+            Console.Write("DD: ");
+            day = Convert.ToInt32(Console.ReadLine());
+            product.ExpirationDate = new DateTime(year, month, day);
             Mahsulotlar.Add(product);
             return "Product Added Successfully";
         }
@@ -35,6 +89,26 @@ namespace MarketCRUD.Services
 
         public List<Market> GetAllProducts()
         {
+            if (Mahsulotlar.Count == 0)
+            {
+                Console.WriteLine("No products available.");
+                return null;
+            }
+            Console.Write("Todays Date: ");
+            DateTime today = DateTime.Now;
+            foreach (var product in Mahsulotlar)
+            {
+                if (product.ExpirationDate < today)
+                {
+                    Console.WriteLine($"Product {product.Name} has expired.");
+                    product.IsExpired = true;
+                }
+                else
+                {
+                    Console.WriteLine($"Product {product.Name} is valid.");
+                    product.IsExpired = false;
+                }
+            }
             return Mahsulotlar;
         }
 
@@ -57,13 +131,65 @@ namespace MarketCRUD.Services
             if (product1 != null)
             {
                 Console.Write("Enter Name: ");
-                product1.Name = Console.ReadLine();
+                string name = Console.ReadLine();
+                if (string.IsNullOrEmpty(name))
+                {
+                    Console.WriteLine("Name cannot be empty.");
+                }
+                else if (name.Length > 20)
+                {
+                    Console.WriteLine("Name cannot be more than 20 characters.");
+                }
+                else if (name.Length < 3)
+                {
+                    Console.WriteLine("Name cannot be less than 3 characters.");
+                }
+                else if (!char.IsUpper(name[0]))
+                {
+                    Console.WriteLine("Name must start with an uppercase letter.");
+                }
+                else if (name.Contains(" "))
+                {
+                    Console.WriteLine("Name cannot contain spaces.");
+                }
+                else
+                {
+                    product1.Name = name;
+                }
                 Console.Write("Enter Cost: ");
-                product1.Cost = Convert.ToDouble(Console.ReadLine());
-                Console.Write("Enter Made Date: ");
-                product1.MadeDate = Convert.ToDateTime(Console.ReadLine());
-                Console.Write("Enter Expiration Date: ");
-                product1.ExpirationDate = Convert.ToDateTime(Console.ReadLine());
+                double cost = Convert.ToDouble(Console.ReadLine());
+                if (cost < 0)
+                {
+                    Console.WriteLine("Cost cannot be negative.");
+                }
+                else if (cost == 0)
+                {
+                    Console.WriteLine("Cost cannot be zero.");
+                }
+                else if (!double.TryParse(Console.ReadLine(), out cost))
+                {
+                    Console.WriteLine("Invalid cost. Please enter a valid number.");
+                }
+                else
+                {
+                    product1.Cost = cost;
+                }
+                Console.WriteLine("Enter Made Date (YYYY-MM-DD): ");
+                Console.Write("YYYY: ");
+                int year = Convert.ToInt32(Console.ReadLine());
+                Console.Write("MM: ");
+                int month = Convert.ToInt32(Console.ReadLine());
+                Console.Write("DD: ");
+                int day = Convert.ToInt32(Console.ReadLine());
+                product1.MadeDate = new DateTime(year, month, day);
+                Console.Write("Enter Expiration Date (YYYY-MM-DD): ");
+                Console.Write("YYYY: ");
+                year = Convert.ToInt32(Console.ReadLine());
+                Console.Write("MM: ");
+                month = Convert.ToInt32(Console.ReadLine());
+                Console.Write("DD: ");
+                day = Convert.ToInt32(Console.ReadLine());
+                product1.ExpirationDate = new DateTime(year, month, day);
                 return "Product Updated Successfully";
             }
             return "Product Not Found";
